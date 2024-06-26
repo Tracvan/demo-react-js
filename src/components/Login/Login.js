@@ -3,6 +3,9 @@ import { useState } from "react";
 import LoginService from "../../services/login.service"
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const formLoginValidate = Yup.object().shape({
@@ -27,6 +30,8 @@ function checkLogin(values, res) {
 
 function Login() {
   const navigate = useNavigate()
+  const notify = () => toast('🦄 Login Success!');
+
   const formLogin = useFormik({
     initialValues: {
       email: "",
@@ -39,8 +44,11 @@ function Login() {
       LoginService.getAll()
         .then(res => {
           if (checkLogin(values, res)) {
-            alert('login success')
-            navigate("/users")
+            notify()
+            setTimeout(() => {
+              navigate("/users")
+            }, 5000)
+
           } else {
             alert('Email or password is not correct')
             navigate("/login")
@@ -57,6 +65,7 @@ function Login() {
     <div classname="col d-flex justify-content-center">
       <form className="form" onSubmit={formLogin.handleSubmit}>
         <div>
+          <ToastContainer />
           <div data-mdb-input-init className="form-outline mb-4">
             <input onChange={formLogin.handleChange} name="email" type="email" id="form2Example1" className="form-control" />
             <label className="form-label" htmlFor="form2Example1">Email address</label>
